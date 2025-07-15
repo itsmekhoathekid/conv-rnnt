@@ -13,7 +13,7 @@ from speechbrain.nnet.schedulers import NoamScheduler
 from torch import nn
 
 # Cấu hình logger
-log_file = "/home/anhkhoa/conv-rnnt/conv_rnnt.txt"
+log_file = "workspace/conv-rnnt/conv_rnnt.txt"
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(message)s",
@@ -69,7 +69,7 @@ def train_one_epoch(model, dataloader, optimizer, criterion, device, scheduler):
 
         optimizer.step()
 
-        lr , _ = scheduler.step(optimizer.optimizer)
+        lr , _ = scheduler(optimizer.optimizer)
 
         total_loss += loss.item()
         progress_bar.set_postfix(batch_loss=loss.item())

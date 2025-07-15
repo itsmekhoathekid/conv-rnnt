@@ -220,9 +220,9 @@ class Speech2Text(Dataset):
         self.pad_token = self.vocab.get_pad_token()
         self.unk_token = self.vocab.get_unk_token()
         
-        stats = torch.load(cmvn_stats) 
-        self.cmvn_mean = stats['mean']
-        self.cmvn_std = stats['std']
+        # stats = torch.load(cmvn_stats) 
+        # self.cmvn_mean = stats['mean']
+        # self.cmvn_std = stats['std']
             
     def __len__(self):
         return len(self.data)
@@ -282,7 +282,8 @@ class Speech2Text(Dataset):
             stacked = np.concatenate([log_mag[i], log_mag[i+3], log_mag[i+6]])
             stacked_feats.append(stacked)
 
-        return np.array(stacked_feats)
+        stacked_feats = torch.tensor(np.array(stacked_feats), dtype=torch.float)
+        return stacked_feats
     
     # def get_fbank(self, waveform, sample_rate=16000):
     #     mel_extractor = T.MelSpectrogram(
@@ -322,7 +323,7 @@ class Speech2Text(Dataset):
         wav_path = current_item["wav_path"]
         encoded_text = torch.tensor(current_item["encoded_text"] + [self.eos_token], dtype=torch.long)
         decoder_input = torch.tensor([self.sos_token] + current_item["encoded_text"], dtype=torch.long)
-        fbank = self.extract_features(wav_path).float()  # [T, 80]
+        fbank = self.extract_features(wav_path)  # [T, 80]
         
         return {
             "text": encoded_text,        # [T_text]
