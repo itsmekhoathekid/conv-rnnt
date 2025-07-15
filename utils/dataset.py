@@ -149,6 +149,8 @@ from torch.utils.data import Dataset
 import torchaudio
 import torchaudio.transforms as T
 from tqdm import tqdm
+import numpy as np
+import librosa
 
 # [{idx : {encoded_text : Tensor, wav_path : text} }]
 
@@ -256,23 +258,31 @@ class Speech2Text(Dataset):
 
     #     return normalized_log_mel_spec.transpose(0, 1)  # [T, 80]
 
-    def get_fbank(self, waveform, sample_rate=16000):
-        mel_extractor = T.MelSpectrogram(
-            sample_rate=sample_rate,
-            n_fft=512,
-            win_length=int(0.02 * sample_rate),
-            hop_length=int(0.01 * sample_rate),
-            n_mels=160,  # ✨ để đúng với Conv1d(in_channels=80)
-            power=2.0
-        )
+    def extract_features(self, wav_file, sr=16000):
+        # Load waveform
+        y, _ = librosa.load(wav_file, sr=sr)
 
-        log_mel = mel_extractor(waveform.unsqueeze(0))
-        log_mel = torchaudio.functional.amplitude_to_DB(log_mel, multiplier=10.0, amin=1e-10, db_multiplier=0)
-        
-        features = log_mel.squeeze(0).transpose(0, 1) 
+        # Window và hop size
+        win_length = int(0.025 * sr)   # 25ms = 400 samples
+        hop_length = int(0.010 * sr)   # 10ms = 160 samples
 
-        # features = (features - self.cmvn_mean) / (self.cmvn_std + 1e-5)
-        return features  # [T, 80]
+        # STFT magnitude
+        stft = librosa.stft(y, n_fft=512, win_length=win_length, hop_length=hop_length, window='hamming')
+        mag = np.abs(stft[:64, :])  # Lấy 64 bins đầu tiên (low frequencies)
+
+        # Log magnitude
+        log_mag = np.log1p(mag)  # log(1 + x)
+
+        # Transpose: (64, T) -> (T, 64)
+        log_mag = log_mag.T
+
+        # Frame stacking: 3 frames, skip = 3
+        stacked_feats = []
+        for i in range(0, len(log_mag) - 6, 3):  # skip rate = 3
+            stacked = np.concatenate([log_mag[i], log_mag[i+3], log_mag[i+6]])
+            stacked_feats.append(stacked)
+
+        return np.array(stacked_feats)
     
     # def get_fbank(self, waveform, sample_rate=16000):
     #     mel_extractor = T.MelSpectrogram(
@@ -306,17 +316,13 @@ class Speech2Text(Dataset):
 
     #     return features
     
-    def extract_from_path(self, wave_path):
-        waveform, sr = torchaudio.load(wave_path)
-        waveform = waveform.squeeze(0)  # (channel,) -> (samples,)
-        return self.get_fbank(waveform, sample_rate=sr)
 
     def __getitem__(self, idx):
         current_item = self.data[idx]
         wav_path = current_item["wav_path"]
         encoded_text = torch.tensor(current_item["encoded_text"] + [self.eos_token], dtype=torch.long)
         decoder_input = torch.tensor([self.sos_token] + current_item["encoded_text"], dtype=torch.long)
-        fbank = self.extract_from_path(wav_path).float()  # [T, 80]
+        fbank = self.extract_features(wav_path).float()  # [T, 80]
         
         return {
             "text": encoded_text,        # [T_text]

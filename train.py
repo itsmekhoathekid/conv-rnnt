@@ -10,9 +10,10 @@ from models.optim import Optimizer
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 import logging
 from speechbrain.nnet.schedulers import NoamScheduler
+from torch import nn
 
 # Cấu hình logger
-log_file = "/data/npl/Speech2Text/rna/conv-rnnt/log_train_slurm/conv_rnnt_log_0806.txt"
+log_file = "/home/anhkhoa/conv-rnnt/conv_rnnt.txt"
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(message)s",
@@ -175,7 +176,7 @@ def main():
     num_epochs = training_cfg["epochs"]
 
     for epoch in range(start_epoch, num_epochs + 1):
-        train_loss, curr_lr = train_one_epoch(model, train_loader, optimizer, criterion, device)
+        train_loss, curr_lr = train_one_epoch(model, train_loader, optimizer, criterion, device, scheduler)
         val_loss = evaluate(model, dev_loader, criterion, device)
 
         logging.info(f"Epoch {epoch}: Train Loss = {train_loss:.4f}, Val Loss = {val_loss:.4f}, LR = {curr_lr:.6f}")
