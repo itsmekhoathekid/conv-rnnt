@@ -1,0 +1,29 @@
+
+2025-06-07 13:06:42,088 - Average training loss: 107.0087
+2025-06-07 13:07:41,387 - Average validation loss: 77.2266
+2025-06-07 13:07:41,387 - Epoch 1: Train Loss = 107.0087, Val Loss = 77.2266
+2025-06-07 13:40:40,553 - Average training loss: 97.0587
+2025-06-07 13:41:34,632 - Average validation loss: 74.8174
+2025-06-07 13:41:34,632 - Epoch 2: Train Loss = 97.0587, Val Loss = 74.8174
+2025-06-07 14:20:15,137 - Reloaded model from /data/npl/Speech2Text/rna/conv-rnnt/save_model/0706/conv-rnnt_epoch_2 at epoch 2
+2025-06-07 14:47:23,841 - Average training loss: 95.8062
+2025-06-07 14:48:08,768 - Average validation loss: 75.1514
+2025-06-07 14:48:08,769 - Epoch 3: Train Loss = 95.8062, Val Loss = 75.1514
+2025-06-07 15:15:05,752 - Average training loss: 96.3637
+2025-06-07 15:15:43,200 - Average validation loss: 76.3509
+2025-06-07 15:15:43,200 - Epoch 4: Train Loss = 96.3637, Val Loss = 76.3509
+2025-06-07 15:42:36,384 - Average training loss: 97.9787
+2025-06-07 15:43:15,875 - Average validation loss: 77.6873
+2025-06-07 15:43:15,875 - Epoch 5: Train Loss = 97.9787, Val Loss = 77.6873
+2025-06-07 16:10:06,763 - Average training loss: 98.4222
+2025-06-07 16:10:49,734 - Average validation loss: 78.2944
+2025-06-07 16:10:49,734 - Epoch 6: Train Loss = 98.4222, Val Loss = 78.2944
+2025-06-08 01:57:09,997 - Average training loss: 104.2693
+2025-06-08 01:59:12,366 - Average validation loss: 70.8573
+2025-06-08 01:59:12,366 - Epoch 1: Train Loss = 104.2693, Val Loss = 70.8573
+2025-06-08 16:26:14,934 - Average training loss: 106.4248
+2025-06-08 16:27:05,654 - Average validation loss: 76.4037
+2025-06-08 16:27:05,654 - Epoch 1: Train Loss = 106.4248, Val Loss = 76.4037
+2025-06-08 17:13:36,026 - Average training loss: 108.1484
+2025-06-08 17:15:07,683 - Average validation loss: 75.2289
+2025-06-08 17:15:07,683 - Epoch 1: Train Loss = 108.1484, Val Loss = 75.2289

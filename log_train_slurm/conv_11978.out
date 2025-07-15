@@ -1,0 +1,36 @@
+🔁 Training:   0%|          | 0/5830 [00:00<?, ?it/s]/data/npl/Speech2Text/venv/lib/python3.9/site-packages/torchaudio/functional/functional.py:584: UserWarning: At least one mel filterbank has all zero values. The value for `n_mels` (160) may be set too high. Or, the value for `n_freqs` (257) may be set too low.
+  warnings.warn(
+/data/npl/Speech2Text/rna/conv-rnnt/utils/dataset.py:302: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.detach().clone() or sourceTensor.detach().clone().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  decoder_outputs = [torch.tensor(item["decoder_input"]) for item in batch]
+                                                     Traceback (most recent call last):
+  File "/data/npl/Speech2Text/rna/conv-rnnt/train.py", line 200, in <module>
+    main()
+  File "/data/npl/Speech2Text/rna/conv-rnnt/train.py", line 172, in main
+    train_loss = train_one_epoch(model, train_loader, optimizer, criterion, device)
+  File "/data/npl/Speech2Text/rna/conv-rnnt/train.py", line 62, in train_one_epoch
+    output = model(speech, fbank_len.long(), decoder_input.int(), text_len.long())
+  File "/data/npl/Speech2Text/venv/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/data/npl/Speech2Text/venv/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/data/npl/Speech2Text/rna/conv-rnnt/models/model.py", line 78, in forward
+    cnn_output = self.cnn_encoder(inputs)
+  File "/data/npl/Speech2Text/venv/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/data/npl/Speech2Text/venv/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/data/npl/Speech2Text/rna/conv-rnnt/models/cnn_encoder.py", line 145, in forward
+    local_out = self.local_cnn(x)  # [B, 64, T, F]
+  File "/data/npl/Speech2Text/venv/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/data/npl/Speech2Text/venv/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/data/npl/Speech2Text/rna/conv-rnnt/models/cnn_encoder.py", line 27, in forward
+    x = self.linear(x)
+  File "/data/npl/Speech2Text/venv/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/data/npl/Speech2Text/venv/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/data/npl/Speech2Text/venv/lib/python3.9/site-packages/torch/nn/modules/linear.py", line 125, in forward
+    return F.linear(input, self.weight, self.bias)
+RuntimeError: mat1 and mat2 shapes cannot be multiplied (1170x10240 and 5120x2048)

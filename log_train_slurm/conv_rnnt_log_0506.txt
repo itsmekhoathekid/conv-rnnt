@@ -1,0 +1,23 @@
+2025-06-05 09:25:31,196 - No checkpoint found. Starting from scratch.
+2025-06-05 09:43:06,332 - Average training loss: 2731.5005
+2025-06-05 09:43:29,617 - Average validation loss: 1077.6346
+2025-06-05 09:43:29,617 - Epoch 1: Train Loss = 2731.5005, Val Loss = 1077.6346
+2025-06-05 10:01:07,735 - Average training loss: 1550.0893
+2025-06-05 10:01:31,275 - Average validation loss: 78.3294
+2025-06-05 10:01:31,275 - Epoch 2: Train Loss = 1550.0893, Val Loss = 78.3294
+2025-06-05 10:20:00,168 - Average training loss: 100.4376
+2025-06-05 10:20:23,605 - Average validation loss: 79.1067
+2025-06-05 10:20:23,605 - Epoch 3: Train Loss = 100.4376, Val Loss = 79.1067
+2025-06-05 10:38:05,627 - Average training loss: 100.2867
+2025-06-05 10:38:28,744 - Average validation loss: 78.8356
+2025-06-05 10:38:28,744 - Epoch 4: Train Loss = 100.2867, Val Loss = 78.8356
+2025-06-05 10:56:07,383 - Average training loss: 100.3234
+2025-06-05 10:56:30,650 - Average validation loss: 79.4006
+2025-06-05 10:56:30,650 - Epoch 5: Train Loss = 100.3234, Val Loss = 79.4006
+2025-06-05 11:14:12,083 - Average training loss: 98.2496
+2025-06-05 11:14:35,505 - Average validation loss: 77.2874
+2025-06-05 11:14:35,506 - Epoch 6: Train Loss = 98.2496, Val Loss = 77.2874
+2025-06-05 11:36:10,615 - Average training loss: 98.2161
+2025-06-05 11:36:47,206 - Average validation loss: 77.2380
+2025-06-05 11:36:47,207 - Epoch 7: Train Loss = 98.2161, Val Loss = 77.2380
+===================================================

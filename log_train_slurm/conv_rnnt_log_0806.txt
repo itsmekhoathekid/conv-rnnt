@@ -1,0 +1,35 @@
+2025-06-08 19:10:51,126 - Average training loss: 106.4872
+2025-06-08 19:13:20,199 - Average validation loss: 75.6657
+2025-06-08 19:13:20,200 - Epoch 1: Train Loss = 106.4872, Val Loss = 75.6657
+2025-06-08 20:02:21,568 - Average training loss: 95.3956
+2025-06-08 20:04:26,039 - Average validation loss: 73.6057
+2025-06-08 20:04:26,040 - Epoch 2: Train Loss = 95.3956, Val Loss = 73.6057
+2025-06-08 20:53:52,898 - Average training loss: 92.9577
+2025-06-08 20:55:49,533 - Average validation loss: 72.1309
+2025-06-08 20:55:49,533 - Epoch 3: Train Loss = 92.9577, Val Loss = 72.1309
+2025-06-08 21:53:52,324 - Average training loss: 91.8450
+2025-06-08 21:54:34,185 - Average validation loss: 71.0020
+2025-06-08 21:54:34,185 - Epoch 4: Train Loss = 91.8450, Val Loss = 71.0020
+2025-06-08 22:26:28,470 - Average training loss: 90.0815
+2025-06-08 22:27:15,925 - Average validation loss: 70.8129
+2025-06-08 22:27:15,925 - Epoch 5: Train Loss = 90.0815, Val Loss = 70.8129
+2025-06-08 22:55:55,723 - Average training loss: 89.8820
+2025-06-08 22:56:40,511 - Average validation loss: 71.9097
+2025-06-08 22:56:40,511 - Epoch 6: Train Loss = 89.8820, Val Loss = 71.9097
+2025-06-08 23:31:30,593 - Average training loss: 89.5803
+2025-06-08 23:32:34,579 - Average validation loss: 73.9363
+2025-06-08 23:32:34,579 - Epoch 7: Train Loss = 89.5803, Val Loss = 73.9363
+2025-06-09 00:13:21,559 - Average training loss: 89.0746
+2025-06-09 00:14:39,968 - Average validation loss: 72.2825
+2025-06-09 00:14:39,968 - Epoch 8: Train Loss = 89.0746, Val Loss = 72.2825
+2025-06-09 00:56:04,862 - Average training loss: 87.1141
+2025-06-09 00:57:09,965 - Average validation loss: 71.8482
+2025-06-09 00:57:09,965 - Epoch 9: Train Loss = 87.1141, Val Loss = 71.8482
+2025-06-09 09:45:11,291 - Reloaded model from /data/npl/Speech2Text/rna/conv-rnnt/save_model/2502/conv-rnnt_epoch_9 at epoch 9
+2025-06-09 09:45:28,856 - Reloaded model from /data/npl/Speech2Text/rna/conv-rnnt/save_model/2502/conv-rnnt_epoch_9 at epoch 9
+2025-06-09 10:27:33,381 - Average training loss: 86.2692
+2025-06-09 10:28:46,758 - Average validation loss: 71.8634
+2025-06-09 10:28:46,758 - Epoch 10: Train Loss = 86.2692, Val Loss = 71.8634
+2025-06-09 11:04:53,821 - Average training loss: 85.4086
+2025-06-09 11:06:00,688 - Average validation loss: 71.9330
+2025-06-09 11:06:00,688 - Epoch 11: Train Loss = 85.4086, Val Loss = 71.9330
