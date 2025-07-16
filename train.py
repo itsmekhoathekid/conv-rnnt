@@ -13,7 +13,7 @@ from speechbrain.nnet.schedulers import NoamScheduler
 from torch import nn
 
 # Cấu hình logger
-log_file = "workspace/conv-rnnt/conv_rnnt.txt"
+log_file = "/home/anhkhoa/conv-rnnt/conv_rnnt.txt"
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(message)s",

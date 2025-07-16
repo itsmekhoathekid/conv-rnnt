@@ -78,9 +78,11 @@ class Transducer(nn.Module):
         cnn_output = self.cnn_encoder(inputs)
         #################################
         # Then through LSTM encoder
-        enc_state, _ = self.encoder(cnn_output, inputs_length)
+        enc_state  = self.encoder(cnn_output, inputs_length)
         
-        dec_state, _ = self.decoder(targets_add_blank, (targets_length+1).cpu())
+        dec_state  = self.decoder(targets_add_blank, (targets_length+1).cpu())
+
+        # print(enc_state.shape, dec_state.shape)
 
         # Joint network
         logits = self.joint(enc_state, dec_state)
