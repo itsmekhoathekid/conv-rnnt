@@ -47,12 +47,12 @@ model:
 
 training:
   epochs: 100
-  batch_size: 4
-  save_path: "workspace/conv-rnnt/saves"
-  train_path : "workspace/dataset/train_w2i.json"
-  dev_path : "workspace/dataset/test_w2i.json"
-  test_path : "workspace/dataset/test_w2i.json"
-  vocab_path : "workspace/dataset/vocab_w2i.json"
+  batch_size: 1
+  save_path: "/home/anhkhoa/TASA/saves"
+  train_path : "/home/anhkhoa/transformer_transducer_speeQ/data/train.json"
+  dev_path : "/home/anhkhoa/transformer_transducer_speeQ/data/dev.json"
+  test_path : "/home/anhkhoa/transformer_transducer_speeQ/data/dev.json"
+  vocab_path : "/home/anhkhoa/transformer_transducer_speeQ/data/vocab.json"
   cmvn_stats : "/data/npl/Speech2Text/rna/zlinhtinh/cmvn_stats.pt"
   reload: False
   max_grad_norm: 200

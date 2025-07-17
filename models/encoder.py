@@ -1,9 +1,9 @@
 import torch
 import torch.nn as nn
 
-class BaseEncoder(nn.Module):
+class BaseLSTMLayer(nn.Module):
     def __init__(self, input_size, hidden_size, output_size, n_layers, dropout=0.2, bidirectional=False):
-        super(BaseEncoder, self).__init__()
+        super(BaseLSTMLayer, self).__init__()
 
         self.lstm = nn.LSTM(
             input_size=input_size,
@@ -19,7 +19,7 @@ class BaseEncoder(nn.Module):
             output_size, bias=True
         )
 
-        # self.input_bn = nn.BatchNorm1d(input_size)
+        self.swish = Swish()  # Swish activation function
 
     def forward(self, inputs, input_lengths):
         assert inputs.dim() == 3  # [B, T, F]
@@ -59,7 +59,7 @@ class BaseEncoder(nn.Module):
 
 
         logits = self.output_proj(outputs)
-
+        logits = self.swish(logits)  # Apply Swish activation
 
         return logits, hidden
 
@@ -74,52 +74,25 @@ class ProjectedLSTMEncoder(nn.Module):
         self.bidirectional = bidirectional
         self.hidden_size = hidden_size
 
-        self.lstms = nn.ModuleList()
-        self.projections = nn.ModuleList()
-        self.drop = nn.Dropout(dropout)
-
+        self.layers = nn.ModuleList()
         for i in range(n_layers):
-            in_dim = input_size if i == 0 else output_size
-            lstm = nn.LSTM(
-                input_size=in_dim,
+            input_dim = input_size if i == 0 else output_size
+            layer = BaseLSTMLayer(
+                input_size=input_dim,
                 hidden_size=hidden_size,
-                num_layers=1,
-                batch_first=True,
+                output_size=output_size,
+                n_layers=1,  # Each layer is a single LSTM layer
+                dropout=dropout,
                 bidirectional=bidirectional
             )
-            out_dim = 2 * hidden_size if bidirectional else hidden_size
-            proj = nn.Sequential(
-                nn.Linear(out_dim, output_size),
-                Swish()
-            )
-            self.lstms.append(lstm)
-            self.projections.append(proj)
-        # self.output_proj = nn.Linear(
-        #     2 * hidden_size if bidirectional else hidden_size,
-        #     output_size, bias=True
-        # )
+            self.layers.append(layer)
+
+        
 
     def forward(self, x, lengths=None):
-        B, T, F = x.shape
-        if lengths is not None:
-            sorted_lengths, indices = torch.sort(lengths, descending=True)
-            x = x[indices]
-            restore_indices = torch.argsort(indices)
-
         for i in range(self.n_layers):
-            if lengths is not None:
-                packed = nn.utils.rnn.pack_padded_sequence(x, sorted_lengths.cpu(), batch_first=True, enforce_sorted=True)
-                self.lstms[i].flatten_parameters()
-                packed_out, _ = self.lstms[i](packed)
-                x, _ = nn.utils.rnn.pad_packed_sequence(packed_out, batch_first=True)
-                x = x[restore_indices]
-            else:
-                x, _ = self.lstms[i](x)
-
-            x = self.projections[i](x)
-            x = self.drop(x)
-        # x = self.output_proj(x) 
-        return x  # shape: [B, T, output_size]
+            x, hidden = self.layers[i](x, lengths)
+        return x, hidden
 
 
 
