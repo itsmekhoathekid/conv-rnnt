@@ -61,7 +61,7 @@ class Speech2Text(Dataset):
             n_fft=512,
             win_length=int(0.032 * sample_rate),
             hop_length=int(0.010 * sample_rate),
-            n_mels=160,  # ✨ để đúng với Conv1d(in_channels=80)
+            n_mels=160,  
             power=2.0
         )
 

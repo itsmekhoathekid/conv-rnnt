@@ -111,7 +111,7 @@ class Transducer(nn.Module):
                 out = F.softmax(logits, dim=0).detach()
                 pred = torch.argmax(out, dim=0).item()
 
-                if pred == 2: 
+                if pred == 2: # eos
                     break
 
                 if pred not in (0,1,2,4):
