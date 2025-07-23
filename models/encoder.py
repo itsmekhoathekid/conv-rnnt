@@ -28,34 +28,34 @@ class BaseLSTMLayer(nn.Module):
         B, T, F = inputs.shape
         # inputs = self.input_bn(inputs.view(-1, F)).view(B, T, F)
 
-        if input_lengths is not None:
-            sorted_seq_lengths, indices = torch.sort(input_lengths, descending=True)
-            inputs_sorted = inputs[indices]
+        # if input_lengths is not None:
+        #     sorted_seq_lengths, indices = torch.sort(input_lengths, descending=True)
+        #     inputs_sorted = inputs[indices]
 
 
-            packed_inputs = nn.utils.rnn.pack_padded_sequence(
-                inputs_sorted, sorted_seq_lengths.cpu(), batch_first=True, enforce_sorted=True
-            )
+        #     packed_inputs = nn.utils.rnn.pack_padded_sequence(
+        #         inputs_sorted, sorted_seq_lengths.cpu(), batch_first=True, enforce_sorted=True
+        #     )
 
-        else:
-            packed_inputs = inputs
+        # else:
+        #     packed_inputs = inputs
 
         self.lstm.flatten_parameters()
 
         # print("packed_inputs", packed_inputs.data.shape)
 
-        outputs, hidden = self.lstm(packed_inputs)
+        outputs, hidden = self.lstm(inputs)
 
 
-        if input_lengths is not None:
-            unpacked_outputs, _ = nn.utils.rnn.pad_packed_sequence(outputs, batch_first=True)
+        # if input_lengths is not None:
+        #     unpacked_outputs, _ = nn.utils.rnn.pad_packed_sequence(outputs, batch_first=True)
 
 
-            _, desorted_indices = torch.sort(indices)
-            outputs = unpacked_outputs[desorted_indices]
+        #     _, desorted_indices = torch.sort(indices)
+        #     outputs = unpacked_outputs[desorted_indices]
 
-        else:
-            outputs = outputs
+        # else:
+        #     outputs = outputs
 
 
         logits = self.output_proj(outputs)
