@@ -11,7 +11,7 @@ model:
     local_cnn_encoder: 
         kernel_size: 5
         stride: 1
-        feature_dim: 160
+        feature_dim: 80
         dim_out: 160
     global_cnn_encoder:
         n_layers: 1
@@ -56,6 +56,7 @@ training:
   cmvn_stats : "/data/npl/Speech2Text/rna/zlinhtinh/cmvn_stats.pt"
   reload: False
   max_grad_norm: 200
+  log_file: "workspace/conv-rnnt/conv_rnnt.txt"
 
 
 optim:

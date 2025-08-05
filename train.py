@@ -1,27 +1,22 @@
 import torch
 from utils.dataset import Speech2Text, speech_collate_fn
-from models.model import Transducer
 from tqdm import tqdm
-from models.loss import RNNTLoss
+
+from models import (
+    logg,
+    RNNTLoss,
+    Transducer,
+    Optimizer
+)
 import argparse
 import yaml
 import os 
-from models.optim import Optimizer
-from torch.optim.lr_scheduler import ReduceLROnPlateau
 import logging
 from speechbrain.nnet.schedulers import NoamScheduler
 from torch import nn
 
-# Cấu hình logger
-log_file = "/home/anhkhoa/conv-rnnt/conv_rnnt.txt"
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(message)s",
-    handlers=[
-        logging.FileHandler(log_file),
-        logging.StreamHandler()  # vẫn in ra màn hình
-    ]
-)
+
+
 
 def reload_model(model, optimizer, checkpoint_path, model_name):
     past_epoch = 0
@@ -117,6 +112,7 @@ def main():
     args = parser.parse_args()
 
     config = load_config(args.config)
+    logg(config['training']['log_file'])
     training_cfg = config['training']
 
     # ==== Load Dataset ====

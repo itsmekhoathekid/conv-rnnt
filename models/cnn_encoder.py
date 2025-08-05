@@ -16,11 +16,7 @@ class LocalCNNEncoder(nn.Module):
         self.bn3 = nn.BatchNorm2d(64)
         self.bn4 = nn.BatchNorm2d(64)
         
-        self.fc = nn.Sequential(
-            nn.Linear(64 * feature_dim, dim_out*2),
-            nn.ReLU(),
-            nn.Linear(dim_out*2, dim_out)
-        )
+        self.fc = nn.Linear(64 * feature_dim, dim_out)
 
     def forward(self, x):  # x: [B, 1, T, F]
         x = torch.nn.functional.pad(x, (2, 2, 4, 0))  # (left, right, top, bottom)
@@ -33,6 +29,7 @@ class LocalCNNEncoder(nn.Module):
         x = self.relu(self.conv4(x))
         B, C, T, F = x.shape
         x = x.permute(0, 2, 1, 3).reshape(B, T, C * F)  # [B, T, 64*F]
+        
         x = self.fc(x)  # [B, T, dim_out]
         return x  # [B, T, dim_out]
 
