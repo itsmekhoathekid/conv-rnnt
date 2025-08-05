@@ -99,6 +99,7 @@ class Speech2Text(Dataset):
             "text": encoded_text,
             "fbank": fbank,
             "text_len": len(encoded_text),
+            "decoder_input_len": len(decoder_input),
             "fbank_len": fbank.shape[0],
             "decoder_input": decoder_input,
             "tokens": tokens,
@@ -116,6 +117,7 @@ def speech_collate_fn(batch):
     texts = [item["text"] for item in batch]
     fbanks = [item["fbank"] for item in batch]
     text_lens = torch.tensor([item["text_len"] for item in batch], dtype=torch.long)
+    decoder_input_lens = torch.tensor([item["decoder_input_len"] for item in batch], dtype=torch.long)
     fbank_lens = torch.tensor([item["fbank_len"] for item in batch], dtype=torch.long)
 
     padded_decoder_inputs = pad_sequence(decoder_outputs, batch_first=True, padding_value=0)
@@ -130,6 +132,7 @@ def speech_collate_fn(batch):
         "text": padded_texts,
         "text_mask": text_mask,
         "text_len" : text_lens,
+        "decoder_input_len": decoder_input_lens,
         "fbank_len" : fbank_lens,
         "fbank": padded_fbanks,
         "fbank_mask": speech_mask

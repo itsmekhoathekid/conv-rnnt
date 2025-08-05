@@ -43,7 +43,7 @@ model:
   dropout: 0.3
   name : 'conv-rnnt'
   share_weight: False
-  
+  blank: 4
 
 training:
   epochs: 100
@@ -57,6 +57,7 @@ training:
   reload: False
   max_grad_norm: 200
   log_file: "workspace/conv-rnnt/conv_rnnt.txt"
+  result : "workspace/conv-rnnt/results.txt"
 
 
 optim:
