@@ -13,6 +13,10 @@ class RNNTLoss(torch.nn.Module):
         # fbank_len: [B]
         # text_len: [B]
 
+        # print(f"Logits shape: {logits.shape}")
+        # print(f"Targets shape: {targets.shape}")
+        # print(f"Fbank length shape: {fbank_len}")
+        # print(f"Text length shape: {text_len}")
 
         loss = rnnt_loss(logits, targets[:, :].int(), fbank_len.int(), text_len.int(), blank=self.blank)
         

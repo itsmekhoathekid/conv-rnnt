@@ -34,6 +34,8 @@ class Vocab:
         return self.stoi["<pad>"]
     def get_unk_token(self):
         return self.stoi["<unk>"]
+    def get_blank_token(self):
+        return self.stoi["<blank>"]
     def __len__(self):
         return len(self.vocab)
 
@@ -50,6 +52,7 @@ class Speech2Text(Dataset):
         self.eos_token = self.vocab.get_eos_token()
         self.pad_token = self.vocab.get_pad_token()
         self.unk_token = self.vocab.get_unk_token()
+        self.blank_token = self.vocab.get_blank_token()
         self.apply_spec_augment = apply_spec_augment
         self.fbank = Fbank(
             sample_rate=16000,
@@ -87,8 +90,8 @@ class Speech2Text(Dataset):
     def __getitem__(self, idx):
         current_item = self.data[idx]
         wav_path = current_item["wav_path"]
-        encoded_text = torch.tensor(current_item["encoded_text"] + [self.eos_token], dtype=torch.long)
-        decoder_input = torch.tensor([self.sos_token] + current_item["encoded_text"], dtype=torch.long)
+        encoded_text = torch.tensor(current_item["encoded_text"], dtype=torch.long)
+        decoder_input = torch.tensor([self.blank_token] + current_item["encoded_text"], dtype=torch.long)
         tokens = torch.tensor(current_item["encoded_text"], dtype=torch.long)
         fbank = self.extract_from_path(wav_path).float()  # [T, 512]
 

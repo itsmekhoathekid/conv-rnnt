@@ -69,10 +69,10 @@ class Transducer(nn.Module):
         )
 
     def forward(self, inputs, inputs_length, targets, targets_length):
-        zero = torch.zeros((targets.shape[0], 1)).long()
-        if targets.is_cuda: zero = zero.cuda()
+        blank_id = self.config["blank"]
+        blank = torch.full((targets.shape[0], 1), blank_id).long().to(inputs.device)
         
-        targets_add_blank = torch.cat((targets, zero), dim=1)
+        targets_add_blank = torch.cat((blank, targets), dim=1)
         #################################
         # Process through CNN encoder first
         cnn_output = self.cnn_encoder(inputs)
@@ -80,7 +80,7 @@ class Transducer(nn.Module):
         # Then through LSTM encoder
         enc_state, _  = self.encoder(cnn_output, inputs_length)
         
-        dec_state, _  = self.decoder(targets_add_blank, (targets_length+1).cpu())
+        dec_state, _  = self.decoder(targets_add_blank, targets_length + 1)
 
         # print(enc_state.shape, dec_state.shape)
 
@@ -98,7 +98,7 @@ class Transducer(nn.Module):
         # Then through LSTM encoder
         enc_states, _ = self.encoder(cnn_output, inputs_length)
 
-        zero_token = torch.LongTensor([[1]])
+        zero_token = torch.LongTensor([[4]])
         if inputs.is_cuda:
             zero_token = zero_token.cuda()
 
