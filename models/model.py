@@ -98,7 +98,7 @@ class Transducer(nn.Module):
         # Then through LSTM encoder
         enc_states, _ = self.encoder(cnn_output, inputs_length)
 
-        zero_token = torch.LongTensor([[self.config["blank"]]])
+        zero_token = torch.LongTensor([[1]])
         if inputs.is_cuda:
             zero_token = zero_token.cuda()
 
