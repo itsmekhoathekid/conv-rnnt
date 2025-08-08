@@ -82,7 +82,6 @@ class Transducer(nn.Module):
         
         dec_state, _  = self.decoder(targets, targets_length)
 
-        # print(enc_state.shape, dec_state.shape)
 
         # Joint network
         logits = self.joint(enc_state, dec_state)

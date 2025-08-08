@@ -22,12 +22,12 @@ def create_vocab(json_path):
         "<s>": 1,
         "</s>": 2,
         "<unk>": 3,
-        "<blank>" : 4
+        "<blank>" : 0
     }
 
     for idx, item in data.items():
         text = normalize_transcript(item['script'])
-        for word in text.split(' '):
+        for word in text.split():
             if word not in vocab:
                 vocab[word] = len(vocab)
     
@@ -48,7 +48,7 @@ def process_data(data_path, vocab, default_data_path, save_path):
         data_res = {}
         text = normalize_transcript(item['script'])
         unk_id = vocab["<unk>"]
-        tokens = [vocab.get(word, unk_id) for word in text.strip().split()]
+        tokens = [vocab.get(word, unk_id) for word in text.split()]
         data_res['encoded_text'] = tokens
         data_res['text'] = text
         data_res['wav_path'] = os.path.join(default_data_path, item['voice'])
@@ -58,16 +58,16 @@ def process_data(data_path, vocab, default_data_path, save_path):
     print(f"Data saved to {save_path}")
 
 
-vocab = create_vocab(r"/data/npl/Speech2Text/conv-rnnt/data/train.json")
-save_data(vocab, r"/data/npl/Speech2Text/conv-rnnt/data/vocab_w2i.json")
+vocab = create_vocab("workspace/dataset/train.json")
+save_data(vocab, "workspace/dataset/vocab_w2i.json")
 
-process_data(r"/data/npl/Speech2Text/conv-rnnt/data/train.json",
+process_data("workspace/dataset/train.json",
              vocab,
-             r"/data/npl/Speech2Text/conv-rnnt/data/voices",
-             r"/data/npl/Speech2Text/conv-rnnt/data/train_w2i.json")
+             "workspace/dataset/voices",
+             "workspace/dataset/train_w2i.json")
 
-process_data(r"/data/npl/Speech2Text/conv-rnnt/data/test.json",
+process_data("workspace/dataset/test.json",
              vocab,
-             r"/data/npl/Speech2Text/conv-rnnt/data/voices",
-             r"/data/npl/Speech2Text/conv-rnnt/data/test_w2i.json")
+             "workspace/dataset/voices",
+             "workspace/dataset/test_w2i.json")
 
