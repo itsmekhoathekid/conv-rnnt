@@ -1,21 +1,18 @@
 import torch
 from utils.dataset import Speech2Text, speech_collate_fn
-from tqdm import tqdm
-
 from models import (
-    logg,
-    RNNTLoss,
-    Transducer,
-    Optimizer
+    Transducer, logg
 )
+from tqdm import tqdm
+from models.loss import RNNTLoss
 import argparse
 import yaml
 import os 
+from models.optim import Optimizer
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 import logging
 from speechbrain.nnet.schedulers import NoamScheduler
 from torch import nn
-
-
 
 
 def reload_model(model, optimizer, checkpoint_path, model_name):
@@ -54,12 +51,25 @@ def train_one_epoch(model, dataloader, optimizer, criterion, device, scheduler):
         text_len = batch["text_len"].to(device)
         target_text = batch["text"].to(device)
         decoder_input = batch["decoder_input"].to(device)
-        decoder_input_len = batch["decoder_input_len"].to(device)
-
+        # print(f"================AUDIO================")
+        # print(f"Speech shape: {speech.shape}")
+        # print(f"Speech len shape: {fbank_len.shape}")
+        # print(f"Speech len: {fbank_len}")
+        # # print(f"Speech mask shape: {speech_mask.shape}")
+        # # print(f"Speech mask: {speech_mask}")
+        # print(f"================TARGET================")
+        # # print(f"Target mask shape: {text_mask.shape}")
+        # # print(f"Target mask: {text_mask}")
+        # print(f"Target len shape: {text_len.shape}")
+        # print(f"Target len: {text_len}")
+        # print(f"Target text shape: {target_text.shape}")
+        # print(f"Target text: {target_text}")
         optimizer.zero_grad()
-        output = model(speech, fbank_len, decoder_input, decoder_input_len)
+        output = model(speech, fbank_len.long(), decoder_input.int(), text_len.long())
+        # exit()
         loss = criterion(output, target_text, fbank_len, text_len)
         loss.backward()
+        
 
         nn.utils.clip_grad_norm_(model.parameters(), max_norm=200)
 
@@ -84,15 +94,14 @@ def evaluate(model, dataloader, criterion, device):
     with torch.no_grad():
         for batch in progress_bar:
             speech = batch["fbank"].to(device)
+            target_text = batch["text"].to(device)
             speech_mask = batch["fbank_mask"].to(device)
             text_mask = batch["text_mask"].to(device)
             fbank_len = batch["fbank_len"].to(device)
             text_len = batch["text_len"].to(device)
-            target_text = batch["text"].to(device)
             decoder_input = batch["decoder_input"].to(device)
-            decoder_input_len = batch["decoder_input_len"].to(device)
 
-            output = model(speech, fbank_len.long(), decoder_input.int(), decoder_input_len.long())
+            output = model(speech, fbank_len.long(), decoder_input.int(), text_len.long())
             loss = criterion(output, target_text, fbank_len, text_len)
 
             total_loss += loss.item()
@@ -121,6 +130,7 @@ def main():
     train_dataset = Speech2Text(
         json_path=training_cfg['train_path'],
         vocab_path=training_cfg['vocab_path'],
+        # cmvn_stats=training_cfg['cmvn_stats'],
     )
 
     train_loader = torch.utils.data.DataLoader(
@@ -133,6 +143,7 @@ def main():
     dev_dataset = Speech2Text(
         json_path=training_cfg['dev_path'],
         vocab_path=training_cfg['vocab_path'],
+        # cmvn_stats=training_cfg['cmvn_stats'],
     )
 
     dev_loader = torch.utils.data.DataLoader(
@@ -154,19 +165,17 @@ def main():
     optimizer = Optimizer(model.parameters(), config['optim'])
 
     # ==== Scheduler ====
-    if not os.path.exists(config['training']['save_path'] + '/scheduler.ckpt'):
-        scheduler = NoamScheduler(
-            n_warmup_steps=config['scheduler']['warmup_steps'],
-            lr_initial=config['scheduler']['lr_init']
-        )
-    else:
-        scheduler = NoamScheduler.load(config['training']['save_path'] + '/scheduler.ckpt')
+    scheduler = NoamScheduler(
+        n_warmup_steps=config['scheduler']['warmup_steps'],
+        lr_initial=config['scheduler']['lr_init']
+    )
 
     # ==== Reload checkpoint if needed ====
     start_epoch = 1
     if training_cfg['reload']:
         checkpoint_path = training_cfg['save_path']
         start_epoch, model, optimizer = reload_model(model, optimizer, checkpoint_path, config['model']['name'])
+        scheduler.load(os.path.join(training_cfg['save_path'], 'scheduler.ckpt'))
 
     # ==== Training loop ====
     num_epochs = training_cfg["epochs"]
@@ -194,5 +203,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-

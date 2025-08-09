@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from .utils import ResidualForBase, ResidualConnection
 
 class LocalCNNEncoder(nn.Module):
     def __init__(self, kernel_size=5, stride=1, feature_dim= 192, dim_out= 2048):
@@ -69,7 +70,7 @@ class GlobalCNNBlock(nn.Module):
         self.pw_cnn2 = nn.Conv1d(hidden_dim, input_dim, kernel_size=kernel_size_pw)
 
         # Squeeze-and-Excitation
-        self.se = SqueezeExcitation(input_dim)
+        self.se = SqueezeExcitation(input_dim, 8)
 
         # Batch Normalization
         self.bn1 = nn.BatchNorm1d(hidden_dim)
@@ -85,10 +86,13 @@ class GlobalCNNBlock(nn.Module):
         self.kernel_size_dw = kernel_size_dw
         self.dilation = dilation
 
+        self.residual_base = ResidualForBase(input_dim, n_dropout)
+
     def forward(self, x):
         # x: [B, T, D] -> Chuyển thành [B, D, T] cho Conv1d
+        residual = x 
         x = x.transpose(1, 2)  # [B, D, T]
-        residual = x
+        
 
         # print(f"x.shape: {x.shape}")
         # Point-wise CNN 1
@@ -113,17 +117,11 @@ class GlobalCNNBlock(nn.Module):
         # Squeeze and Excitation
         x = self.se(x)
 
-        # print(f"x.shape: {x.shape}")
-        # Dropout
         x = self.dropout(x)
 
-        # Residual Connection
-        x = x + residual
-
-        # print(f"x.shape: {x.shape}")
-
-        # Chuyển lại về [B, T, D]
         x = x.transpose(1, 2)
+        x = self.residual_base(x, residual)
+
         return x
     
 class GlobalCNNEncoder(nn.Module):
@@ -143,18 +141,20 @@ class CNNEncoder(nn.Module):
         super(CNNEncoder, self).__init__()
         self.local_cnn = local_cnn
         self.global_cnn = global_cnn
+        self.residual_connection = ResidualConnection(d_input, 0.1)
         self.projected = nn.Linear(d_input * 2, d_output)  
+
+
     def forward(self, x):
-        # print(f"x.shape: {x.shape}")
+
         x = x.unsqueeze(1)
-        local_out = self.local_cnn(x)  # [B, 64, T, F]
-        # print(f"local_out.shape: {local_out.shape}")
-        global_out = self.global_cnn(local_out)  # [B, T, 64*F]
-        # print(f"global_out.shape: {global_out.shape}")
-        concat = torch.cat([local_out, global_out], dim=2)  # [B, T, 128*F]
-        # print(f"concat.shape: {concat.shape}")
+        local_out = self.local_cnn(x) 
+
+        global_out = self.residual_connection(local_out, self.global_cnn) 
+
+        concat = torch.cat([local_out, global_out], dim=2) 
         
-        output = self.projected(concat)  # [B, T, 128*F] -> [B, T, d_input]
+        output = self.projected(concat) 
         return output
     
 def build_cnn_encoder(config):
