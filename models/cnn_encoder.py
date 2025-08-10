@@ -86,7 +86,7 @@ class GlobalCNNBlock(nn.Module):
         self.kernel_size_dw = kernel_size_dw
         self.dilation = dilation
 
-        self.residual_base = ResidualForBase(input_dim, n_dropout)
+        # self.residual_base = ResidualForBase(input_dim, n_dropout)
 
     def forward(self, x):
         # x: [B, T, D] -> Chuyển thành [B, D, T] cho Conv1d
@@ -120,7 +120,7 @@ class GlobalCNNBlock(nn.Module):
         x = self.dropout(x)
 
         x = x.transpose(1, 2)
-        x = self.residual_base(x, residual)
+        x += residual
 
         return x
     
@@ -141,7 +141,7 @@ class CNNEncoder(nn.Module):
         super(CNNEncoder, self).__init__()
         self.local_cnn = local_cnn
         self.global_cnn = global_cnn
-        self.residual_connection = ResidualConnection(d_input, 0.1)
+        # self.residual_connection = ResidualConnection(d_input, 0.1)
         self.projected = nn.Linear(d_input * 2, d_output)  
 
 
@@ -150,7 +150,8 @@ class CNNEncoder(nn.Module):
         x = x.unsqueeze(1)
         local_out = self.local_cnn(x) 
 
-        global_out = self.residual_connection(local_out, self.global_cnn) 
+        global_out = self.global_cnn(local_out)  
+        global_out +=  local_out
 
         concat = torch.cat([local_out, global_out], dim=2) 
         

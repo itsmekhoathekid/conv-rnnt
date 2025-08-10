@@ -90,7 +90,7 @@ class Speech2Text(Dataset):
     def __getitem__(self, idx):
         current_item = self.data[idx]
         wav_path = current_item["wav_path"]
-        encoded_text = torch.tensor(current_item["encoded_text"], dtype=torch.long)
+        encoded_text = torch.tensor(current_item["encoded_text"] + [self.eos_token], dtype=torch.long)
         decoder_input = torch.tensor([self.sos_token] + current_item["encoded_text"], dtype=torch.long)
         tokens = torch.tensor(current_item["encoded_text"], dtype=torch.long)
         fbank = self.extract_from_path(wav_path).float()  # [T, 512]
