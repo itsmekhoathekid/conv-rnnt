@@ -137,31 +137,25 @@ class GlobalCNNEncoder(nn.Module):
         return x
 
 class CNNEncoder(nn.Module):
-    def __init__(self, local_cnn, global_cnn, d_input, d_output, cnn_type):
+    def __init__(self, local_cnn, global_cnn, d_input, d_output):
         super(CNNEncoder, self).__init__()
         self.local_cnn = local_cnn
         self.global_cnn = global_cnn
         # self.residual_connection = ResidualConnection(d_input, 0.1)
         self.projected = nn.Linear(d_input * 2, d_output)  
-        self.cnn_type = cnn_type
+
 
     def forward(self, x):
-        if self.cnn_type == "local":
-            x = x.unsqueeze(1)
-            output = self.local_cnn(x) 
-        elif self.cnn_type == "global":
-            x = x.unsqueeze(1)
-            output = self.global_cnn(x)
-        else:
-            x = x.unsqueeze(1)
-            local_out = self.local_cnn(x) 
 
-            global_out = self.global_cnn(local_out)  
-            global_out +=  local_out
+        x = x.unsqueeze(1)
+        local_out = self.local_cnn(x) 
 
-            concat = torch.cat([local_out, global_out], dim=2) 
-            
-            output = self.projected(concat) 
+        global_out = self.global_cnn(local_out)  
+        global_out +=  local_out
+
+        concat = torch.cat([local_out, global_out], dim=2) 
+        
+        output = self.projected(concat) 
         return output
     
 def build_cnn_encoder(config):
@@ -179,8 +173,7 @@ def build_cnn_encoder(config):
         n_layers= config["global_cnn_encoder"]["n_layers"],
         n_dropout= config["global_cnn_encoder"]["n_dropout"]
     )
-    cnn_type = config["type"]
-    return CNNEncoder(local_cnn, global_cnn, d_input= config["global_cnn_encoder"]["input_dim"], d_output= config["dim_out"], cnn_type=cnn_type)
+    return CNNEncoder(local_cnn, global_cnn, d_input= config["global_cnn_encoder"]["input_dim"], d_output= config["dim_out"])
 
 
 # import torch

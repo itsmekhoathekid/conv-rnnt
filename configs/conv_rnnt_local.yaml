@@ -8,7 +8,6 @@ audio_data:
 model:
   type: transducer
   cnn_encoder:
-    type: "local"
     local_cnn_encoder: 
         kernel_size: 5
         stride: 1

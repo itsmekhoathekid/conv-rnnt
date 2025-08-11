@@ -8,11 +8,10 @@ audio_data:
 model:
   type: transducer
   cnn_encoder:
-    type: "local"
     local_cnn_encoder: 
         kernel_size: 5
         stride: 1
-        feature_dim: 80
+        feature_dim: 192
         dim_out: 160
     global_cnn_encoder:
         n_layers: 1
@@ -22,7 +21,7 @@ model:
         input_dim: 160  
         hidden_dim: 320
         n_dropout: 0.3
-    dim_out: 160
+    dim_out: 192
   enc:
       type: lstm
       hidden_size: 320
@@ -40,7 +39,7 @@ model:
       inner_size: 512
 
   vocab_size: 4866
-  feature_dim: 160
+  feature_dim: 192
   dropout: 0.3
   name : 'conv-rnnt'
   share_weight: False
@@ -62,13 +61,20 @@ training:
 
 
 optim:
-  type: adam
-  lr: 0.001
-  weight_decay: 0.0001
+  # type: adam
+  # lr: 0.001
+  # weight_decay: 0.0001
+  # decay_rate: 0.5
+  type: sgd
+  lr: 0.0003
+  momentum: 0.9
+  weight_decay: 0
+  begin_to_adjust_lr: 60
+  nesterov: None
   decay_rate: 0.5
 
 scheduler:
-  lr_init: 0.001
+  lr_init: 0.0003
   warmup_steps: 25000
 
 rnnt_loss:
