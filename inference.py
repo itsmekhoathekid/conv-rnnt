@@ -26,6 +26,7 @@ def ids_to_text(ids, itos, eos_id=None):
 def main():
     parser = argparse.ArgumentParser(description="Inference script for RNN-T speech-to-text model")
     parser.add_argument('--config', required=True, help='Path to YAML config file')
+    parser.add_argument('--epoch', required=False, help='Path to model checkpoint')
     args = parser.parse_args()
 
     full_cfg = load_config(args.config)
@@ -34,7 +35,7 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     #===Load Checkpoint===
-    checkpoint = torch.load(full_cfg["training"]["save_path"] + "/conv-rnnt_epoch_2", map_location=device)
+    checkpoint = torch.load(full_cfg["training"]["save_path"] + f"/{full_cfg["model"]["name"]}_epoch_{args.epoch}", map_location=device)
     state_dict = checkpoint.get('model_state_dict', checkpoint)
 
     #===Load Model===
