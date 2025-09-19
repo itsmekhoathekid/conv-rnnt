@@ -2,7 +2,7 @@ import json
 import re
 def normalize_transcript(text):
     text = text.lower()
-    text = re.sub(r"[\'\"(),.!?]", " ", text)
+    text = re.sub(r"[\'\"(),.!?:]", " ", text)
     text = re.sub(r"\s+", " ", text)  # loại bỏ khoảng trắng dư
     return text.strip()
 
@@ -22,7 +22,7 @@ def create_vocab(json_path):
         "<s>": 1,
         "</s>": 2,
         "<unk>": 3,
-        "<blank>" : 4
+        "<blank>" : 0
     }
 
     for idx, item in data.items():
@@ -58,16 +58,15 @@ def process_data(data_path, vocab, default_data_path, save_path):
     print(f"Data saved to {save_path}")
 
 
-vocab = create_vocab(r"C:\paper\raw_data\Vietnamese-Speech-to-Text-datasets\ViVOS\train.json")
-save_data(vocab, r"C:\paper\raw_data\Vietnamese-Speech-to-Text-datasets\ViVOS\vocab_char.json")
+vocab = create_vocab("workspace/dataset/train.json")
+save_data(vocab, "workspace/dataset/vocab_c2i.json")
 
-process_data(r"C:\paper\raw_data\Vietnamese-Speech-to-Text-datasets\ViVOS\train.json",
+process_data("workspace/dataset/train.json",
              vocab,
-             r"C:\paper\raw_data\Vietnamese-Speech-to-Text-datasets\ViVOS\voices",
-             r"C:\paper\raw_data\Vietnamese-Speech-to-Text-datasets\ViVOS\train_char.json")
+             "workspace/dataset/voices",
+             "workspace/dataset/train_c2i.json")
 
-process_data(r"C:\paper\raw_data\Vietnamese-Speech-to-Text-datasets\ViVOS\train.json",
+process_data("workspace/dataset/test.json",
              vocab,
-             r"C:\paper\raw_data\Vietnamese-Speech-to-Text-datasets\ViVOS\voices",
-             r"C:\paper\raw_data\Vietnamese-Speech-to-Text-datasets\ViVOS\test_char.json")
-
+             "workspace/dataset/voices",
+             "workspace/dataset/test_c2i.json")

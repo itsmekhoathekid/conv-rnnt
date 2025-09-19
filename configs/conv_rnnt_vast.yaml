@@ -44,6 +44,7 @@ model:
   name : 'conv-rnnt'
   share_weight: False
   blank: 0
+  
 
 training:
   epochs: 100
@@ -58,6 +59,10 @@ training:
   max_grad_norm: 200
   log_file: "workspace/conv-rnnt/conv_rnnt.txt"
   result : "workspace/conv-rnnt/results.txt"
+  eos: 2
+  sos: 1
+  blank: 0
+  type: "phoneme"
 
 
 optim:

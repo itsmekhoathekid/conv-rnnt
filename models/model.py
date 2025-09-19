@@ -68,6 +68,10 @@ class Transducer(nn.Module):
             reduction=config.get("reduction", "mean")
         )
 
+        self.eos = config.get("eos", 2)
+        self.sos = config.get("sos", 1)
+        self.blank = config.get("blank", 0)
+
     def forward(self, inputs, inputs_length, targets, targets_length):
         blank_id = self.config["blank"]
         blank = torch.full((targets.shape[0], 1), blank_id).long().to(inputs.device)
@@ -113,7 +117,7 @@ class Transducer(nn.Module):
                 if pred == 2: # eos
                     break
 
-                if pred not in (0,1,2,4):
+                if pred not in [self.sos, self.eos, self.blank]:
                     token_list.append(pred)
                     token = torch.LongTensor([[pred]])
                     if enc_state.is_cuda:
